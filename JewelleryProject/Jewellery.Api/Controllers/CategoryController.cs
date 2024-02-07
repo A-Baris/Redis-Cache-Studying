@@ -53,7 +53,7 @@ namespace Jewellery.Api.Controllers
 
         }
         [HttpPost("update")]
-        public async Task<IActionResult> Update(Product entity)
+        public async Task<IActionResult> Update(Category entity)
         {
             await _categoryCache.Update(entity);
             return Ok(entity);
