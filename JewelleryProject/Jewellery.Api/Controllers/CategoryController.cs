@@ -26,11 +26,14 @@ namespace Jewellery.Api.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Create(Category entity)
         {
-            await _categoryCache.Create(entity);
+            if (ModelState.IsValid)
+            {
+                await _categoryCache.Create(entity);
+                return Ok(entity);
 
+            }
 
-            //await _categoryService.Create(entity);
-            return Ok(entity);
+            else { return BadRequest("Failed"); }
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -38,7 +41,34 @@ namespace Jewellery.Api.Controllers
             var categories = await _categoryCache.GetAll();
             return Ok(categories);
         }
+        [HttpGet("getCategory/{id}")]
+        public async Task<IActionResult> GetCategory(int id)
+        {
+            var category = await _categoryCache.GetbyId(id);
+            if (category != null)
+            {
+                return Ok(category);
+            }
+            else return NotFound("Not Exist");
 
+        }
+        [HttpPost("update")]
+        public async Task<IActionResult> Update(Product entity)
+        {
+            await _categoryCache.Update(entity);
+            return Ok(entity);
+        }
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _categoryCache.Delete(id);
+            if (result == true)
+            {
+                return Ok("Success");
+            }
+            else { return BadRequest("Fail"); }
+
+        }
 
     }
 }
