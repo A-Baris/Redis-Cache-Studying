@@ -1,5 +1,7 @@
 ﻿using Jewellery.BLL.AbstractRepository;
 using Jewellery.BLL.ConcreteRepository;
+using Jewellery.BLL.Redis_Cache.Abstract;
+using Jewellery.BLL.Redis_Cache.Concrete;
 using Jewellery.Dal.JewelleryContext;
 using Jewellery.Dal.Redis_Cache.Abstract;
 using Jewellery.Dal.Redis_Cache.Entities;
@@ -14,9 +16,9 @@ using System.Threading.Tasks;
 namespace Jewellery.Dal.Redis_Cache.Concrete
 {
 
-    public class CategoryCacheService : CacheWithRepository<Category>,ICategoryCacheService
+    public class CategoryCacheService : RedisCacheService<Category>, ICategoryCacheService
     {
-        public CategoryCacheService(int dbNo, string entityKey, string url,ProjectContext context) : base(dbNo, entityKey, url,context)
+        public CategoryCacheService(int dbNo, string entityKey, string url) : base(dbNo, entityKey, url)
         {
         }
     }

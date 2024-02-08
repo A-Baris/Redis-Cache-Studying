@@ -1,10 +1,14 @@
 ﻿
+using Jewellery.BLL.AbstractRepositories;
+using Jewellery.BLL.Redis_Cache.Abstract;
+using Jewellery.BLL.Redis_Cache.Concrete;
 using Jewellery.Dal.Redis_Cache;
 using Jewellery.Dal.Redis_Cache.Abstract;
 using Jewellery.Dal.Redis_Cache.Concrete;
 using Jewellery.Entity.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Jewellery.Api.Controllers
 {
@@ -12,63 +16,32 @@ namespace Jewellery.Api.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-
+        private readonly ICategoryService _categoryService;
         private readonly ICategoryCacheService _categoryCache;
 
-
-        public CategoryController(ICategoryCacheService categoryCache)
+        public CategoryController(ICategoryService categoryService,ICategoryCacheService categoryCache)
         {
-
+            _categoryService = categoryService;
             _categoryCache = categoryCache;
-
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> Create(Category entity)
-        {
-            if (ModelState.IsValid)
-            {
-                await _categoryCache.Create(entity);
-                return Ok(entity);
-
-            }
-
-            else { return BadRequest("Failed"); }
-        }
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var categories = await _categoryCache.GetAll();
-            return Ok(categories);
-        }
-        [HttpGet("getCategory/{id}")]
-        public async Task<IActionResult> GetCategory(int id)
-        {
-            var category = await _categoryCache.GetbyId(id);
-            if (category != null)
+            var cacheEntities = await _categoryCache.GetAllEntities();
+            if (cacheEntities!=null)
             {
-                return Ok(category);
+                return Ok(cacheEntities);
             }
-            else return NotFound("Not Exist");
-
-        }
-        [HttpPost("update")]
-        public async Task<IActionResult> Update(Category entity)
-        {
-            await _categoryCache.Update(entity);
-            return Ok(entity);
-        }
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var result = await _categoryCache.Delete(id);
-            if (result == true)
+            var databaseEntities = await _categoryService.GetAll();
+            if(databaseEntities!=null)
             {
-                return Ok("Success");
+                return Ok(databaseEntities);
             }
-            else { return BadRequest("Fail"); }
-
+            return Ok(null);
+           
         }
-
+     
+       
     }
 }

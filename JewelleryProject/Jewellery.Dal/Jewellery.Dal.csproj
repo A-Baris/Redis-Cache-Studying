@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Jewellery.Common\Jewellery.Common.csproj" />
     <ProjectReference Include="..\Jewellery.Entity\Jewellery.Entity.csproj" />
   </ItemGroup>
 

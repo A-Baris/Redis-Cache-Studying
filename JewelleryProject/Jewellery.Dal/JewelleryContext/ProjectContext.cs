@@ -1,4 +1,5 @@
-﻿using Jewellery.Entity.Entities;
+﻿using Jewellery.Common.IpFinder;
+using Jewellery.Entity.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,7 @@ namespace Jewellery.Dal.JewelleryContext
                         {
                             entityRepository.CreatedDate = DateTime.Now;
                             entityRepository.CreatedByComputer = Environment.MachineName;
-                            entityRepository.CreatedByIp =GetIpAddress();
+                            entityRepository.CreatedByIp = IpFinder.GetIpAddress();
 
 
                         }
@@ -63,7 +64,7 @@ namespace Jewellery.Dal.JewelleryContext
                         {
                             entityRepository.UpdatedDate = DateTime.Now;
                             entityRepository.UpdatedByComputer = Environment.MachineName;
-                            entityRepository.UpdatedByIp = GetIpAddress();
+                            entityRepository.UpdatedByIp = IpFinder.GetIpAddress();
 
                         }
                     }
@@ -88,19 +89,20 @@ namespace Jewellery.Dal.JewelleryContext
                     if (entityRepository != null)
                     {
 
-                        if (item.State == EntityState.Added)
-                        {
-                            entityRepository.CreatedDate = DateTime.Now;
-                            entityRepository.CreatedByComputer = Environment.MachineName;
-                            entityRepository.CreatedByIp = GetIpAddress();
-
-
-                        }
+                  
                         if (item.State == EntityState.Modified)
                         {
                             entityRepository.UpdatedDate = DateTime.Now;
                             entityRepository.UpdatedByComputer = Environment.MachineName;
-                            entityRepository.UpdatedByIp = GetIpAddress();
+                            entityRepository.UpdatedByIp = IpFinder.GetIpAddress();
+
+                        }
+                        if (item.State == EntityState.Added)
+                        {
+                            entityRepository.CreatedDate = DateTime.Now;
+                            entityRepository.CreatedByComputer = Environment.MachineName;
+                            entityRepository.CreatedByIp = IpFinder.GetIpAddress();
+
 
                         }
                     }
@@ -113,21 +115,6 @@ namespace Jewellery.Dal.JewelleryContext
             }
             return base.SaveChangesAsync();
         }
-        string GetIpAddress()
-        {
-            string ip = "";
-            string hostName = Dns.GetHostName();
-            var addresses = Dns.GetHostAddresses(hostName);
-            foreach (var address in addresses)
-            {
-                if (address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                {
-                    ip = address.ToString();
-                }
-            }
-
-
-            return ip;
-        }
+       
     }
 }

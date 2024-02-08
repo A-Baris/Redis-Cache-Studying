@@ -14,6 +14,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Jewellery.Entity.Entities;
+using Jewellery.BLL.AbstractRepositories;
 
 namespace Jewellery.IOC.Container
 {
@@ -23,28 +25,38 @@ namespace Jewellery.IOC.Container
         {
         
 
-            services.AddTransient(typeof(ICacheWithRepository<>), typeof(CacheWithRepository<>));
+           //SqlDatabase
+           
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<ICategoryService, CategoryService>();
+
+
+
+
+
+
+            //Redis-cache
+            services.AddTransient(typeof(IRedisCacheService<>), typeof(RedisCacheService<>));
 
             services.AddScoped<ICategoryCacheService, CategoryCacheService>(sp =>
             {
-
-                var context = sp.GetRequiredService<ProjectContext>();
                 var dbNo = RedisDatabase.Categories;
                 var entityKey = RedisEntityKey.CategoryKey;
                 var url = configuration["CacheOptions:Url"];
-                return new CategoryCacheService(dbNo, entityKey, url, context);
-
+                return new CategoryCacheService(dbNo, entityKey, url);
             });
+          
+            
 
-            services.AddScoped<IProductCacheService, ProductCacheService>(sp =>
-            {
-                var context = sp.GetRequiredService<ProjectContext>();
-                var dbNo = RedisDatabase.Products;
-                var entityKey = RedisEntityKey.ProductKey;
-                var url = configuration["CacheOptions:Url"];
-                return new ProductCacheService(dbNo, entityKey, url, context);
+            //services.AddScoped<IProductCacheService, ProductCacheService>(sp =>
+            //{
+            //    var context = sp.GetRequiredService<ProjectContext>();
+            //    var dbNo = RedisDatabase.Products;
+            //    var entityKey = RedisEntityKey.ProductKey;
+            //    var url = configuration["CacheOptions:Url"];
+            //    return new ProductCacheService(dbNo, entityKey, url, context);
 
-            });
+            //});
         }
     }
 }

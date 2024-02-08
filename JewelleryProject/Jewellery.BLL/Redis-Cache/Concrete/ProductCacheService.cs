@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace Jewellery.BLL.Redis_Cache.Concrete
 {
-    public class ProductCacheService : CacheWithRepository<Product>, IProductCacheService
+    public class ProductCacheService : RedisCacheService<Product>, IProductCacheService
     {
-        public ProductCacheService(int dbNo, string entityKey, string url, ProjectContext context) : base(dbNo, entityKey, url, context)
+        public ProductCacheService(int dbNo, string entityKey, string url) : base(dbNo, entityKey, url)
         {
         }
     }
